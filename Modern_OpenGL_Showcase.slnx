@@ -1,0 +1,8 @@
+<Solution>
+  <Configurations>
+    <Platform Name="ARM64" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="Modern_OpenGL_Showcase/Modern_OpenGL_Showcase.vcxproj" Id="5c594cbd-5896-4ebf-9703-1e42f84dba12" />
+</Solution>
