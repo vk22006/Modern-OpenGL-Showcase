@@ -92,6 +92,7 @@ static unsigned int CreateLinkShader() {
 	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
 	glCompileShader(vertexShader);
 
+	// Check for errors
 	int success;
 	char infoLog[512];
 	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
@@ -118,6 +119,7 @@ static unsigned int CreateLinkShader() {
 	glAttachShader(shaderProgram, fragmentShader);   // Attaching fragment shader with shader program
 	glLinkProgram(shaderProgram);                    // Linking the above attached shaders with the program
 
+	// Check for errors
 	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
 	if (!success) {
 		glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
