@@ -220,6 +220,9 @@ int main() {
 
 	GLFWwindow* window = Initialize();
 
+	// Get version details here
+	getOpenGLVerInfo();
+
 	unsigned int shaderProgram = CreateLinkShader();
 
 	std::vector<unsigned int> VBOs(2);
