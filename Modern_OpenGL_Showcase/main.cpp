@@ -5,6 +5,8 @@
 #include <string>
 #include <fstream>
 
+//#include "shaders.h"  TODO : Organize the shader functions in this header
+
 const int SCR_WIDTH = 750;
 const int SCR_HEIGHT = 750;
 
