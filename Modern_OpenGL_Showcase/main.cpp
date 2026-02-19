@@ -137,20 +137,15 @@ static unsigned int CreateLinkShader() {
 
 // ===| Generate and Bind VAO, VBO |=============================================================
 
-static unsigned int GenerateBindArrayBuffer(unsigned int* VBO1, unsigned int* VBO2) {
+static unsigned int GenerateBindArrayBuffer(unsigned int* VBO) {
 	//Stores in CPU
-	const std::vector<float> vertexCoords = {
-		// x     y     z  
-		-0.5f, -0.2f, 0.0f,
-		0.5f, -0.2f, 0.0f,
-		0.0f, 0.5f, 0.0f
-	};
-
-	const std::vector<float> vertexColors = {
-		// r    g    b
-		1.0f, 0.0f, 0.0f,
-		0.0f, 1.0f, 0.0f,
-		0.0f, 0.0f, 1.0f
+	const std::vector<float> vertexCoordsColors = { 
+		-0.8f, -0.8f, 0.0f, // coordinates
+		1.0f, 0.0f, 0.0f,   // color
+		0.8f, -0.8f, 0.0f,  // coordinates
+		0.0f, 1.0f, 0.0f,   // color
+		0.0f, 0.8f, 0.0f,   // coordinates
+		0.0f, 0.0f, 1.0f    // color
 	};
 
 	//Transfer memory to GPU
@@ -162,32 +157,37 @@ static unsigned int GenerateBindArrayBuffer(unsigned int* VBO1, unsigned int* VB
 
 	// Generate, bind, enable vertex atrribute and sending data for VBOs
 	// For VBO1 : Coordinates
-	glGenBuffers(1, VBO1);
-	glBindBuffer(GL_ARRAY_BUFFER, *VBO1);
+	glGenBuffers(1, VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, *VBO);
 	glBufferData(
 		GL_ARRAY_BUFFER,
-		vertexCoords.size() * sizeof(float),
-		vertexCoords.data(),
+		vertexCoordsColors.size() * sizeof(float),
+		vertexCoordsColors.data(),
 		GL_STATIC_DRAW
 	);
 
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-
-	// For VBO2 : Colors
-	glGenBuffers(1, VBO2);
-	glBindBuffer(GL_ARRAY_BUFFER, *VBO2);
-	glBufferData(
-		GL_ARRAY_BUFFER,
-		vertexColors.size() * sizeof(float),
-		vertexColors.data(),
-		GL_STATIC_DRAW
+	glVertexAttribPointer(
+		0, 
+		3, 
+		GL_FLOAT, 
+		GL_FALSE, 
+		sizeof(GL_FLOAT)*6,  // Stride
+		(void*)0
 	);
+
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	glVertexAttribPointer(
+		1, 
+		3, 
+		GL_FLOAT, 
+		GL_FALSE, 
+		sizeof(GL_FLOAT)*6,  // Stride
+		(void*)(sizeof(GL_FLOAT)*3) // Offset
+	);
 	
 
-	//Unbind and disable after completion
+	//bind and disable after completion
 	glBindVertexArray(0);
 
 	glDisableVertexAttribArray(0);
@@ -229,16 +229,15 @@ int main() {
 
 	unsigned int shaderProgram = CreateLinkShader();
 
-	std::vector<unsigned int> VBOs(2);
-	unsigned int VAO = GenerateBindArrayBuffer(&VBOs[0], &VBOs[1]); // Pass VBO by pointer
+	unsigned int VBO;
+	unsigned int VAO = GenerateBindArrayBuffer(&VBO); // Pass VBO by pointer
 
 	RenderLoop(window, shaderProgram, VAO);
 
 	//Cleanup
 
 	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBOs[0]);
-	glDeleteBuffers(1, &VBOs[1]);
+	glDeleteBuffers(1, &VBO);
 	glDeleteProgram(shaderProgram);
 	glfwTerminate();
 
