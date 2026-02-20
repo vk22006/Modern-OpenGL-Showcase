@@ -9,8 +9,9 @@
 class shaders
 {
 public:
-	shaders();
-	std::string LoadShaderProgram(const std::string& filename);
-	static unsigned int CreateLinkShader();
+	static std::string LoadShaderProgram(const std::string& filename);
+	static unsigned int CreateVertexShader();
+	static unsigned int CreateFragShader();
+	static unsigned int LinkShaders();
 };
 

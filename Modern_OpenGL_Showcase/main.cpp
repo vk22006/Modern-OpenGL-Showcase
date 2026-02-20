@@ -5,27 +5,12 @@
 #include <string>
 #include <fstream>
 
-//#include "shaders.h"  TODO : Organize the shader functions in this header
+#include "shaders.h"
 
 const int SCR_WIDTH = 750;
 const int SCR_HEIGHT = 750;
 
-// ===| Load Shader Programs |==================================================================
-
-std::string LoadShaderProgram(const std::string& filename) {
-	std::string shaderStr = "";
-	std::string line = "";
-
-	std::ifstream myFile(filename.c_str());
-
-	if (myFile.is_open()) {
-		while (std::getline(myFile, line)) {      // Storing each line of a file until EOF
-			shaderStr += line + '\n';             // Append each line of program (fix: use +=)
-		}
-		myFile.close();
-	}
-	return shaderStr;
-}
+// ===| Exit on pressing ESC key |==================================================================
 
 static void processInput(GLFWwindow* window)
 {
@@ -77,62 +62,6 @@ static GLFWwindow* Initialize() {
 	}
 
 	return window;
-}
-
-// ===| Creating and linking Linker, Fragment Shaders to a Shader program |======================
-
-static unsigned int CreateLinkShader() {
-	std::string vertexShaderSourceStr = LoadShaderProgram("./shaders/vertexShader.glsl");
-	std::string fragmentShaderSourceStr = LoadShaderProgram("./shaders/fragmentShader.glsl");
-
-	const char* vertexShaderSource = vertexShaderSourceStr.c_str();
-	const char* fragmentShaderSource = fragmentShaderSourceStr.c_str();
-
-	// Vertex shader 
-	unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-
-	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-	glCompileShader(vertexShader);
-
-	// Check for errors
-	int success;
-	char infoLog[512];
-	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-		std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << "\n";
-	}
-
-	// Fragment shader
-	unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-	glCompileShader(fragmentShader);
-
-	glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-	if (!success) {
-		glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-		std::cout << "ERROR::SHADER::FRAGMENT::SHADER::COMPILATION_FAILED\n" << infoLog << "\n";
-	}
-
-	// Linking the shaders
-	unsigned int shaderProgram = glCreateProgram();
-	glAttachShader(shaderProgram, vertexShader);     // Attaching vertex shader with shader program
-	glAttachShader(shaderProgram, fragmentShader);   // Attaching fragment shader with shader program
-	glLinkProgram(shaderProgram);                    // Linking the above attached shaders with the program
-
-	// Check for errors
-	glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-	if (!success) {
-		glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-		std::cout << "ERROR::SHADER::PROGRAM::SHADER::LINKING_FAILED\n" << infoLog << "\n";
-	}
-
-	// Deleting individual shaders after linking
-	glDeleteShader(vertexShader);
-	glDeleteShader(fragmentShader);
-
-	return shaderProgram;
 }
 
 // ===| Generate and Bind VAO, VBO |=============================================================
@@ -226,7 +155,9 @@ int main() {
 	// Get version details here
 	getOpenGLVerInfo();
 
-	unsigned int shaderProgram = CreateLinkShader();
+	//Create object from shader class
+	shaders* shader = new shaders();
+	unsigned int shaderProgram = shader->LinkShaders();
 
 	unsigned int VBO;
 	unsigned int VAO = GenerateBindArrayBuffer(&VBO); // Pass VBO by pointer
