@@ -147,6 +147,53 @@ static unsigned int GenerateBindArrayBuffer(unsigned int* VBO) {
 	return VAO;
 }
 
+// ===| Error Handling |======================================================================
+
+static void clearErrors() {
+	while(glGetError() != GL_NO_ERROR) {}
+}
+
+static const char* GetGLErrorString(GLenum error)
+{
+	switch (error)
+	{
+	case GL_INVALID_ENUM: return "GL_INVALID_ENUM";
+	case GL_INVALID_VALUE: return "GL_INVALID_VALUE";
+	case GL_INVALID_OPERATION: return "GL_INVALID_OPERATION";
+	case GL_OUT_OF_MEMORY: return "GL_OUT_OF_MEMORY";
+	case GL_INVALID_FRAMEBUFFER_OPERATION:
+		return "GL_INVALID_FRAMEBUFFER_OPERATION";
+	}
+	return "UNKNOWN_ERROR";
+}
+
+static bool checkErrorStatus(const char* func, int line)
+{
+	bool foundError = false;
+
+	while (GLenum error = glGetError())
+	{
+		std::cout
+			<< "[OpenGL Error] "
+			<< GetGLErrorString(error)
+			<< " | " << func
+			<< " | line " << line
+			<< std::endl;
+
+		foundError = true;
+	}
+
+	return foundError;
+}
+
+// Macro function to print error
+// Toggle between debug and relase mode
+#ifdef _DEBUG
+	#define GLCall(x) do { clearErrors(); x; checkErrorStatus(#x, __LINE__); } while(false)
+#else
+	#define GLCall(x) x
+#endif
+
 // ===| Main Loop |===========================================================================
 
 static void RenderLoop(GLFWwindow* window, unsigned int shaderProgram, unsigned int VAO) {
@@ -164,12 +211,12 @@ static void RenderLoop(GLFWwindow* window, unsigned int shaderProgram, unsigned 
 		//glDrawArrays(GL_TRIANGLES, 0, 6);  only for drawing without index buffers
 
 		// For drawing with index buffers, we need to use the below
-		glDrawElements(
-			GL_TRIANGLES,     // Mode
+		GLCall(glDrawElements(
+			GL_TRIANGLES,        // Mode
 			6,                // No. of indices to be drawn
 			GL_UNSIGNED_INT,  // Data type
 			0                 // Offset
-		);
+		));
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -183,7 +230,7 @@ int main() {
 	GLFWwindow* window = Initialize();
 
 	// Get version details here
-	getOpenGLVerInfo();
+	//getOpenGLVerInfo();
 
 	//Create object from shader class
 	shaders* shader = new shaders();
