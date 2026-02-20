@@ -69,24 +69,24 @@ static unsigned int GenerateBindArrayBuffer(unsigned int* VBO) {
 	const std::vector<float> vertexCoordsColors = { 
 		// vertex 0
 		-0.5f, -0.5f, 0.0f, // lower-left coordinates
-		1.0f, 0.0f, 0.0f,   // color
+		1.0f, 1.0f, 0.0f,   // color
 
 		//vetex 1
-		0.5f, -0.5f, 0.0f,  // lower-right coordinates
-		0.0f, 1.0f, 0.0f,   // color
+		-0.5f, 0.5f, 0.0f,  // lower-right coordinates
+		0.0f, 1.0f, 1.0f,   // color
 
 		// vertex 2
-		-0.5f, 0.5f, 0.0f,   // top-left coordinates
-		1.0f, 0.0f, 0.0f,    // color
+		0.5f, 0.5f, 0.0f,   // top-left coordinates
+		1.0f, 0.0f, 1.0f,    // color
 
 		//vertex 3
-		0.5f, 0.5f, 0.0f,    // top-right coordinates
-		0.0f, 1.0f, 0.0f     // color
+		0.5f, -0.5f, 0.0f,    // top-right coordinates
+		1.0f, 1.0f, 1.0f     // color
 	};
 
 	const std::vector<unsigned int> indices = {
-		2, 0, 1,  // triangle 1
-		3, 2, 1   // triangle 2
+		1, 0, 3,  // triangle 1
+		2, 1, 3   // triangle 2
 	};
 
 	//Transfer memory to GPU
