@@ -140,11 +140,11 @@ static unsigned int CreateLinkShader() {
 static unsigned int GenerateBindArrayBuffer(unsigned int* VBO) {
 	//Stores in CPU
 	const std::vector<float> vertexCoordsColors = { 
-		-0.8f, -0.8f, 0.0f, // coordinates
+		-0.8f, -0.8f, 0.0f, // lower-left coordinates
 		1.0f, 0.0f, 0.0f,   // color
-		0.8f, -0.8f, 0.0f,  // coordinates
+		0.8f, -0.8f, 0.0f,  // lower-right coordinates
 		0.0f, 1.0f, 0.0f,   // color
-		0.0f, 0.8f, 0.0f,   // coordinates
+		0.0f, 0.8f, 0.0f,   // top coordinates
 		0.0f, 0.0f, 1.0f    // color
 	};
 
@@ -155,8 +155,7 @@ static unsigned int GenerateBindArrayBuffer(unsigned int* VBO) {
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
 
-	// Generate, bind, enable vertex atrribute and sending data for VBOs
-	// For VBO1 : Coordinates
+	// Generate, bind, enable vertex atrribute and sending data for VBO
 	glGenBuffers(1, VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, *VBO);
 	glBufferData(
