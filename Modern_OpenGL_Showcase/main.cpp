@@ -44,7 +44,7 @@ static GLFWwindow* Initialize() {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	GLFWwindow* window = glfwCreateWindow(650, 650, "OpenGL Triangle Renderer", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(650, 650, "OpenGL Renderer", NULL, NULL);
 	if (window == NULL) {
 		std::cout << "Failed to create new window";
 		glfwTerminate();
@@ -67,12 +67,26 @@ static GLFWwindow* Initialize() {
 static unsigned int GenerateBindArrayBuffer(unsigned int* VBO) {
 	//Stores in CPU
 	const std::vector<float> vertexCoordsColors = { 
-		-0.8f, -0.8f, 0.0f, // lower-left coordinates
+		// vertex 0
+		-0.5f, -0.5f, 0.0f, // lower-left coordinates
 		1.0f, 0.0f, 0.0f,   // color
-		0.8f, -0.8f, 0.0f,  // lower-right coordinates
+
+		//vetex 1
+		0.5f, -0.5f, 0.0f,  // lower-right coordinates
 		0.0f, 1.0f, 0.0f,   // color
-		0.0f, 0.8f, 0.0f,   // top coordinates
-		0.0f, 0.0f, 1.0f    // color
+
+		// vertex 2
+		-0.5f, 0.5f, 0.0f,   // top-left coordinates
+		1.0f, 0.0f, 0.0f,    // color
+
+		//vertex 3
+		0.5f, 0.5f, 0.0f,    // top-right coordinates
+		0.0f, 1.0f, 0.0f     // color
+	};
+
+	const std::vector<unsigned int> indices = {
+		2, 0, 1,  // triangle 1
+		3, 2, 1   // triangle 2
 	};
 
 	//Transfer memory to GPU
@@ -89,6 +103,17 @@ static unsigned int GenerateBindArrayBuffer(unsigned int* VBO) {
 		GL_ARRAY_BUFFER,
 		vertexCoordsColors.size() * sizeof(float),
 		vertexCoordsColors.data(),
+		GL_STATIC_DRAW
+	);
+
+	// Setup Index buffer object (ie.EBO)
+	unsigned int EBO;
+	glGenBuffers(1, &EBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(
+		GL_ELEMENT_ARRAY_BUFFER,
+		indices.size() * sizeof(unsigned int),
+		indices.data(),
 		GL_STATIC_DRAW
 	);
 
@@ -134,10 +159,17 @@ static void RenderLoop(GLFWwindow* window, unsigned int shaderProgram, unsigned 
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		// draw our first triangle
 		glUseProgram(shaderProgram);
 		glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		//glDrawArrays(GL_TRIANGLES, 0, 6);  only for drawing without index buffers
+
+		// For drawing with index buffers, we need to use the below
+		glDrawElements(
+			GL_TRIANGLES,     // Mode
+			6,                // No. of indices to be drawn
+			GL_UNSIGNED_INT,  // Data type
+			0                 // Offset
+		);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
