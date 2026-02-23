@@ -153,10 +153,9 @@ static void clearErrors() {
 	while(glGetError() != GL_NO_ERROR) {}
 }
 
-static const char* GetGLErrorString(GLenum error)
-{
-	switch (error)
-	{
+static const char* GetGLErrorString(GLenum error) {
+
+	switch (error) {
 	case GL_INVALID_ENUM: return "GL_INVALID_ENUM";
 	case GL_INVALID_VALUE: return "GL_INVALID_VALUE";
 	case GL_INVALID_OPERATION: return "GL_INVALID_OPERATION";
@@ -167,12 +166,12 @@ static const char* GetGLErrorString(GLenum error)
 	return "UNKNOWN_ERROR";
 }
 
-static bool checkErrorStatus(const char* func, int line)
-{
+static bool checkErrorStatus(const char* func, int line) {
+
 	bool foundError = false;
 
-	while (GLenum error = glGetError())
-	{
+	while (GLenum error = glGetError()) {
+
 		std::cout
 			<< "[OpenGL Error] "
 			<< GetGLErrorString(error)
@@ -211,15 +210,15 @@ static void RenderLoop(GLFWwindow* window, unsigned int shaderProgram, unsigned 
 		//glDrawArrays(GL_TRIANGLES, 0, 6);  only for drawing without index buffers
 
 		// For drawing with index buffers, we need to use the below
-		GLCall(glDrawElements(
+		glDrawElements(
 			GL_TRIANGLES,        // Mode
 			6,                // No. of indices to be drawn
 			GL_UNSIGNED_INT,  // Data type
 			0                 // Offset
-		));
+		);
 
 		glfwSwapBuffers(window);
-		glfwPollEvents();
+		GLCall(glfwPollEvents());
 	}
 }
 
