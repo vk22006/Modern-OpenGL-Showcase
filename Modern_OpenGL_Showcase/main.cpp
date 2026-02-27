@@ -5,6 +5,9 @@
 
 #include "shaders.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
 const int SCR_WIDTH = 750;
 const int SCR_HEIGHT = 750;
 
@@ -146,6 +149,7 @@ static unsigned int GenerateBindArrayBuffer(unsigned int* VBO) {
 
 	return VAO;
 }
+// ===| Image Loading |=======================================================================
 
 // ===| Error Handling |======================================================================
 
