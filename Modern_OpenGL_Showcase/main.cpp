@@ -151,6 +151,16 @@ static unsigned int GenerateBindArrayBuffer(unsigned int* VBO) {
 }
 // ===| Image Loading |=======================================================================
 
+static void texture_setup(unsigned char* data) {
+	return;
+}
+
+static void load_image() {
+	int width, height, nrChannels;
+	unsigned char* data = stbi_load("[tx]blue_sand.jpg", &width, &height, &nrChannels, 0);
+	texture_setup(data);
+}
+
 // ===| Error Handling |======================================================================
 
 static void clearErrors() {
